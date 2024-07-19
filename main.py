@@ -1,4 +1,11 @@
 #!/usr/bin/python3
+
+# i3colors
+# NOT AFFILIATED WITH OFFICIAL i3 PROJECT!
+# a GUI app to configure colors of the i3 window manager
+# this program is free software, released under the UNLICENSE license
+# (c) lasermtv07, 2024
+
 import tkinter as tk
 from tkinter.colorchooser import askcolor
 from tkinter import Menu
@@ -7,6 +14,7 @@ from tkinter import filedialog
 import os
 import os.path
 import shutil
+import sys
 
 class WindowPrev:
     def __init__(self,canvas,border,backgr,text,indicator,child_border,name):
@@ -16,8 +24,26 @@ class WindowPrev:
         self.text=text
         self.indicator=indicator
         self.child_border=child_border
+
+        self.defCanvas=canvas
+        self.defBorder=border
+        self.defBackgr=backgr
+        self.defText=text
+        self.defIndicator=indicator
+        self.defChild_border=child_border
+
         self.name=name
         return
+    def restoreDefaults(self):
+        self.canvas=self.defCanvas
+        self.border=self.defBorder
+        self.backgr=self.defBackgr
+        self.text=self.defText
+        self.indicator=self.defIndicator
+        self.child_border=self.defChild_border
+        global value
+        genDrawStack(value)
+
     def draw(self,x,y):
         self.canvas.create_rectangle((x,y+10,x+125,y+70),outline=self.child_border, fill='#f0efde',width=2)
         self.canvas.create_rectangle((x,y,x+125,y+10),fill=self.backgr, outline=self.border)
@@ -43,7 +69,7 @@ class WindowPrev:
             try:
                 f=open(f'/home/{os.getlogin()}/.config/i3/config','r')
             except:
-                print('didnt open anything')
+                showwarning(title="Couldnt load anything",message="No file specified and default config doesnt exist")
                 return
         s=(f.read()).split("\n")
         for i in s:
@@ -76,16 +102,15 @@ class WindowPrev:
             w=fopen(fpath,"w")
             w.write(towrite)
         c=(f.read()).split("\n")
+        f.close()
         o=[]
         for i in c:
             t=i.strip()
             t=t.split(" ")
             if t[0]!=f'client.{self.name}':
                 o.append(i)
-            else:
-                o.append(towrite)
         o="\n".join(o)
-        f.close()
+        o+="\n"+towrite
         f=open(fpath,"w")
         f.write(o)
         return
@@ -107,11 +132,15 @@ def backup(fname):
         fn="."+fn
     shutil.copyfile(f,fp+fn)
 
-
-file='test/aaa'
+if len(sys.argv)>=2:
+    file=sys.argv[1]
+else:
+    #handled later
+    file='adfakdfseopw'
 root=tk.Tk()
-root.geometry("640x480")
+root.geometry("640x330")
 root.attributes('-type', 'dialog')
+root.title("i3color")
 
 bar=Menu(root)
 root.config(menu=bar)
@@ -124,11 +153,18 @@ imenu.add_command(label='Info',command=info)
 def copen():
     fpath=file
     ft=filedialog.askopenfilename()
-    if ft!=(): fpath=ft
+    if ft!=() and ft!="": fpath=ft
+    else: return
+    #DONT. LOOK. HERE.
     root.destroy()
-    print(fpath)
+    os.system(f"{__file__} {fpath}")
+    exit(0)
+def cwrite():
+    for i in windows:
+        i.writeFile(file)
+
 fmenu.add_command(label='Open',command=copen)
-fmenu.add_command(label='Write',command=lambda:print('write'))
+fmenu.add_command(label='Write',command=cwrite)
 fmenu.add_command(label='Backup',command=lambda:backup(file))
 fmenu.add_command(label='Quit',command=lambda:exit(0))
 
@@ -213,7 +249,21 @@ frame.place(x=300,y=40)
 frame['borderwidth']=1
 frame['relief']='solid'
 
-tk.Label(frame,text="hewwo uwu").place(x=0,y=0)
+tk.Label(root,text=f"Editing: {file}").place(x=300,y=250)
+changeFrameContent(frame,'focused',windows)
 
+def undoChanges():
+    for i in windows:
+        i.restoreDefaults()
+tk.Button(root,text="Undo", command=undoChanges).place(x=455,y=6)
+
+def loadBackup():
+        f=None
+        f=filedialog.askopenfilename()
+        if f==() or f=="": return
+        for i in windows:
+            i.parseFile(f)
+        global value
+        genDrawStack(value)
+tk.Button(root,text="Load backup ", command=loadBackup).place(x=520,y=6)
 root.mainloop()
-
