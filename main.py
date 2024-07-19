@@ -1,9 +1,12 @@
 #!/usr/bin/python3
 import tkinter as tk
 from tkinter.colorchooser import askcolor
-from tkinter import menu
+from tkinter import Menu
+from tkinter.messagebox import showinfo,showwarning
+from tkinter import filedialog
 import os
 import os.path
+import shutil
 
 class WindowPrev:
     def __init__(self,canvas,border,backgr,text,indicator,child_border,name):
@@ -86,15 +89,54 @@ class WindowPrev:
         f=open(fpath,"w")
         f.write(o)
         return
+
+def backup(fname):
+    if os.path.exists(fname):
+        f=fname
+    elif os.path.exists(f'/home/{os.getlogin()}/.config/i3/config'):
+        f=f'/home/{os.getlogin()}/.config/i3/config'
+    else:
+        showwarning(title="Couldnt backup file",message="Couldn't backup nonexistent file. Please back up first.")
+        return
+    fn=f.split("/")
+    fn=fn[len(fn)-1]
+    fp=f.split("/")
+    fp.pop()
+    fp=("/".join(fp))+"/"
+    while os.path.exists(fp+fn):
+        fn="."+fn
+    shutil.copyfile(f,fp+fn)
+
+
+file='test/aaa'
 root=tk.Tk()
 root.geometry("640x480")
 root.attributes('-type', 'dialog')
 
 bar=Menu(root)
 root.config(menu=bar)
+fmenu=Menu(bar)
+imenu=Menu(bar)
+
+info=lambda:showinfo(title='Info',message='A program to configure window colors of the i3 window manager.\n\nProgram is not affiliated with i3wm project.\n\n(c) lasermtv07,2024. Under UNLICENSE.')
+imenu.add_command(label='Info',command=info)
+
+def copen():
+    fpath=file
+    ft=filedialog.askopenfilename()
+    if ft!=(): fpath=ft
+    root.destroy()
+    print(fpath)
+fmenu.add_command(label='Open',command=copen)
+fmenu.add_command(label='Write',command=lambda:print('write'))
+fmenu.add_command(label='Backup',command=lambda:backup(file))
+fmenu.add_command(label='Quit',command=lambda:exit(0))
+
+bar.add_cascade(label="File",menu=fmenu)
+bar.add_cascade(label="Info",menu=imenu)
 
 pres=tk.Canvas(root, bg='white',width=280,height=230)
-pres.place(x=10,y=25)
+pres.place(x=10,y=10)
 x=20
 y=20
 windows=[
@@ -105,7 +147,6 @@ windows=[
     WindowPrev(pres,'#dddddd','#ffffff','#000000','#0000ff','#dddddd',"urgent"),
     WindowPrev(pres,'orange','yellow','#000000','#0000ff','orange',"placeholder"),
 ]
-file='ahdkjfhakfhd'
 windows[0].writeFile(file)
 for i in windows:
     i.parseFile(file)
@@ -134,13 +175,13 @@ xshift=0
 yshift=0
 for i in range(len(value)):
     j=value[i]
-    tk.Checkbutton(root,text=windows[i].name,var=value[i],command=lambda:genDrawStack(value)).place(x=10+xshift,y=270+yshift)
+    tk.Checkbutton(root,text=windows[i].name,var=value[i],command=lambda:genDrawStack(value)).place(x=10+xshift,y=255+yshift)
     xshift+=130
     if xshift>=260:
         xshift=0
         yshift+=20
 
-tk.Label(root,text="Editing: ").place(x=300,y=25)
+tk.Label(root,text="Editing: ").place(x=300,y=10)
 
 def changeFrameContent(f,x,win):
     #erase content of frame
@@ -165,15 +206,14 @@ for i in windows:
     options.append(i.name)
 option=tk.StringVar()
 option.set(options[0])
-tk.OptionMenu(root,option,*options,command=lambda x:changeFrameContent(frame,x,windows)).place(x=360,y=20)
+tk.OptionMenu(root,option,*options,command=lambda x:changeFrameContent(frame,x,windows)).place(x=360,y=5)
 
 frame=tk.Frame(root,height=202,width=330)
-frame.place(x=300,y=55)
+frame.place(x=300,y=40)
 frame['borderwidth']=1
 frame['relief']='solid'
 
 tk.Label(frame,text="hewwo uwu").place(x=0,y=0)
 
 root.mainloop()
-
 
