@@ -1,3 +1,5 @@
+> **Note: Not affiliated with the official i3 project**
+
 <div align=center>
   <h1>i3colors</h1>
   <img src=https://img.shields.io/badge/Language:-Python-yellow />
@@ -33,7 +35,7 @@ In the **File** menu, you have three options (four but the last one is irrelevan
 ### Onscreen elements
 
 On screen, you have:
- - **Editing** options menu, which will switch what mode of windows are you currently editing (in i3, you can set a different style based on if window is hovered over, if it's inactive.. ). The individual options (`border`,`background`..) are for changing the style itself.
+ - **Editing** options menu, which will switch what mode of windows are you currently editing (in i3, you can set a different style based on if window is hovered over, if it's inactive.. ). The individual options (`border`,`background`..) are for changing the style itself. More via [i3 documentation](https://i3wm.org/docs/userguide.html#client_colors)
  - **Undo** will set all the colors to the state in which they were when the file was initially loaded.
  - **Load backup** will load colors from a different config, but it will not start editing the config (mostly usedful for loading back backups, hence the name)
  - **Preview checkboxes** under the white canvas, in which you toggle a preview of different styles based on the criteria mentioned in **Editing**
