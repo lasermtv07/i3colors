@@ -183,7 +183,6 @@ windows=[
     WindowPrev(pres,'#000000','#0c0c0c','#ffffff','#000000','#0c0c0c',"placeholder"),
     WindowPrev(pres,'#333333','#5f676a','#ffffff','#484e50','#5f676a',"focused_tab_title"),
 ]
-windows[0].writeFile(file)
 for i in windows:
     i.parseFile(file)
 
