@@ -176,12 +176,12 @@ pres.place(x=10,y=10)
 x=20
 y=20
 windows=[
-    WindowPrev(pres,'#0000ff','#6666aa','#ffffff','#0000ff','#0000ff',"focused"),
-    WindowPrev(pres,'#00ff00','#11ee11','#ffffff','#00ff00','#00ff00',"focused_inactive"),
-    WindowPrev(pres,'#ff0000','#ff00ff','#ffffff','#0000ff','#ff0000',"focused_tab_title"),
-    WindowPrev(pres,'#000000','#555555','#ffffff','#0000ff','#000000',"unfocused"),
-    WindowPrev(pres,'#dddddd','#ffffff','#000000','#0000ff','#dddddd',"urgent"),
-    WindowPrev(pres,'orange','yellow','#000000','#0000ff','orange',"placeholder"),
+    WindowPrev(pres,'#4c7899','#285577','#ffffff','#2e9ef4','#285577',"focused"),
+    WindowPrev(pres,'#333333','#5f676a','#ffffff','#484e50','#5f676a',"focused_inactive"),
+    WindowPrev(pres,'#333333','#222222','#888888','#292d2e','#222222',"unfocused"),
+    WindowPrev(pres,'#2f343a','#900000','#ffffff','#900000','#900000',"urgent"),
+    WindowPrev(pres,'#000000','#0c0c0c','#ffffff','#000000','#0c0c0c',"placeholder"),
+    WindowPrev(pres,'#333333','#5f676a','#ffffff','#484e50','#5f676a',"focused_tab_title"),
 ]
 windows[0].writeFile(file)
 for i in windows:
